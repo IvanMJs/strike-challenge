@@ -17,6 +17,7 @@ A modern web application for tracking and managing security vulnerabilities, bui
   - History of state changes
   - Custom confirmation dialogs
   - Form validation
+  - Robust JSON payload validation with clear error messages
 
 - **User Interface**
   - Modern, clean UI with Sass styling
@@ -42,6 +43,11 @@ A modern web application for tracking and managing security vulnerabilities, bui
 - **Password Hashing:** bcryptjs
 - **Testing:** Jest
 - **Storage:** In-memory store (for demo purposes)
+- **Error Handling:**
+  - Comprehensive error middleware
+  - Automatic JSON syntax validation
+  - User-friendly error messages
+  - Appropriate HTTP status codes (400 for malformed JSON)
 
 ## Project Structure
 ```
@@ -156,6 +162,43 @@ Create a `.env` file in the backend directory to customize these values.
    - Add API services in `src/services`
    - Define types in `src/types`
    - Update context providers in `src/context`
+
+## Testing and Coverage
+
+### Running Tests
+To run the backend tests, navigate to the backend directory and use one of the following commands:
+
+```bash
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Coverage Report
+After running tests with coverage, you can find the detailed coverage report in:
+- HTML format: `backend/coverage/lcov-report/index.html`
+- Console output showing:
+  - Statement coverage
+  - Branch coverage
+  - Function coverage
+  - Line coverage
+
+The coverage report breaks down test coverage by:
+- Controllers (auth, vulnerabilities)
+- Middleware (authentication, error handling)
+- Services
+- Utils
+
+### Test Organization
+Tests are organized in the `backend/tests` directory:
+- `auth.test.ts` - Authentication and authorization tests
+- `vulnerabilities.test.ts` - CRUD operations and validation tests
+- `testHelpers.ts` - Shared test utilities and fixtures
 
 ## Contributing
 1. Fork the repository

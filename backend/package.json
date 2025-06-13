@@ -1,13 +1,14 @@
 {
   "name": "backend",
   "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./dist/app.js",
+  "private": true,  "scripts": {
+    "start": "node ./dist/server.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/app.ts",
+    "dev": "ts-node-dev --respawn src/server.ts",
     "clean": "rimraf dist",
-    "test": "jest",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:coverage": "jest --coverage --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "watch": "tsc -w"
   },

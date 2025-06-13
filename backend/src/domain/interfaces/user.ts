@@ -12,6 +12,18 @@ export interface LoginRequest {
   password: string;
 }
 
+// Validate login request
+export function isValidLoginRequest(data: any): data is LoginRequest {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    typeof data.username === 'string' &&
+    typeof data.password === 'string' &&
+    data.username.trim() !== '' &&
+    data.password.trim() !== ''
+  );
+}
+
 export interface LoginResponse {
   token: string;
   user: {
