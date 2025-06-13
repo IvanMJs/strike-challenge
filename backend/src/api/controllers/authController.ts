@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs';
 import { JWT_SECRET, JWT_EXPIRES, ROLES } from '../../config/auth.config';
 import { LoginRequest, User } from '../../domain/interfaces/user';
 
-// This is just for demo purposes. In a real application, users would be stored in a database
-// We'll create the hashes synchronously for our demo users
 const salt = bcrypt.genSaltSync(10);
 const adminHash = bcrypt.hashSync('admin123', salt);
 const userHash = bcrypt.hashSync('user123', salt);
@@ -38,14 +36,14 @@ export const login = async (req: Request<{}, {}, LoginRequest>, res: Response) =
     }
 
     // Check password
-    console.log('Checking password for user:', username);
+    // console.log('Checking password for user:', username);
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       console.log('Invalid password for user:', username);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     
-    console.log('Login successful for user:', username);// Generate JWT token
+    // console.log('Login successful for user:', username); // Generate JWT token
     const signOptions = { 
       expiresIn: JWT_EXPIRES
     };

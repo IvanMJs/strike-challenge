@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET, ROLES, UserRole } from '../../config/auth.config';
-
-// Extend Express Request type to include user information
 declare global {
   namespace Express {
     interface Request {      user?: {

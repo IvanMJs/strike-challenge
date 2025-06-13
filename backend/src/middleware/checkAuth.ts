@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/auth.config';
 import { UserRole } from '../config/auth.config';
-
-// Extend Express Request type to include user
 declare global {
   namespace Express {
     interface Request {
@@ -53,7 +51,8 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// Optional: Middleware to check for specific roles
+// TODO: Do we need Improve role checking to allow multiple roles?
+// Example: roles just view without creat, just card, maybe in the next feature
 export const checkRole = (allowedRoles: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
