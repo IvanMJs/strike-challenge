@@ -34,7 +34,7 @@ export const login = async (req: Request<{}, {}, LoginRequest>, res: Response) =
 
     console.log('Login attempt for username:', username);
 
-    // Find user (case insensitive username comparison)
+    // Find user
     const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
     if (!user) {
       console.log('User not found:', username);
