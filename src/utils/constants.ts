@@ -1,11 +1,13 @@
-export const STATES = [
-  'Pending Fix',
-  'In Progress',
-  'Under Review',
-  'Solved',
-  'False Positive',
-  'Duplicate'
-];
+export type VulnerabilityState = 'Pending Fix' | 'In Progress' | 'Under Review' | 'Solved' | 'False Positive' | 'Duplicate';
+
+export const STATES: Record<string, VulnerabilityState> = {
+  PENDING: 'Pending Fix',
+  IN_PROGRESS: 'In Progress',
+  UNDER_REVIEW: 'Under Review',
+  SOLVED: 'Solved',
+  FALSE_POSITIVE: 'False Positive',
+  DUPLICATE: 'Duplicate'
+};
 
 export const STATE_TRANSITIONS = {
   'Pending Fix': ['In Progress', 'Under Review', 'False Positive', 'Duplicate'],
