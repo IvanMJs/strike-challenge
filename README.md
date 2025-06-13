@@ -51,32 +51,40 @@ A modern web application for tracking and managing security vulnerabilities, bui
 
 ## Project Structure
 ```
-├── backend/                # Node.js Express API
+├── frontend/             # React/Vite Frontend Application
 │   ├── src/
-│   │   ├── api/           # API layer (routes, controllers, middleware)
-│   │   │   ├── controllers/  # Request handlers
-│   │   │   ├── middleware/   # Auth middleware, error handling
-│   │   │   └── routes/       # API route definitions
-│   │   ├── config/        # Configuration (auth, env)
-│   │   ├── domain/        # Domain types and interfaces
-│   │   ├── services/      # Business logic
-│   │   └── utils/         # Shared utilities
-│   └── tests/             # Jest test files
+│   │   ├── components/   # React components
+│   │   │   ├── confirmDialog/    # Confirmation dialog component
+│   │   │   ├── filterBar/        # Filtering and search bar
+│   │   │   ├── header/           # App header with auth status
+│   │   │   ├── login/            # Authentication form
+│   │   │   ├── routing/          # Protected route components
+│   │   │   ├── vulnerabilityCard/# Individual vulnerability display
+│   │   │   ├── vulnerabilityForm/# Create/Edit vulnerability form
+│   │   │   └── vulnerabilityGrid/# Grid display of vulnerabilities
+│   │   ├── context/     # React Context providers (Auth, Vulnerability)
+│   │   ├── services/    # API service integrations
+│   │   ├── types/       # TypeScript interfaces and types
+│   │   ├── utils/       # Constants and utility functions
+│   │   └── views/       # Main view components
+│   ├── public/          # Static assets
+│   └── __tests__/       # Frontend tests
 │
-└── src/                   # React frontend
-    ├── components/        # React components
-    │   ├── confirmDialog/
-    │   ├── filterBar/
-    │   ├── header/        # App header with auth status
-    │   ├── login/         # Authentication forms
-    │   ├── routing/       # Protected route components
-    │   ├── vulnerabilityCard/
-    │   ├── vulnerabilityForm/
-    │   └── vulnerabilityGrid/
-    ├── context/          # React Context providers
-    ├── services/         # API services
-    ├── types/            # TypeScript type definitions
-    └── utils/            # Shared constants and utilities
+└── backend/             # Node.js/Express Backend API
+    ├── src/
+    │   ├── api/         # API layer
+    │   │   ├── controllers/  # Request handlers
+    │   │   ├── middleware/   # Auth and validation middleware
+    │   │   └── routes/       # API endpoint definitions
+    │   ├── config/      # Environment and auth configuration
+    │   ├── domain/      # Domain interfaces and types
+    │   │   ├── interfaces/
+    │   │   └── types/
+    │   ├── middleware/  # Global middleware
+    │   ├── scripts/     # Utility scripts
+    │   ├── services/    # Business logic layer
+    │   └── utils/       # Helper functions and constants
+    └── tests/           # Backend integration tests
 ```
 
 ## Getting Started
