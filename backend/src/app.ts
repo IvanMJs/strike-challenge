@@ -1,35 +1,49 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import { config } from './config/environment';
-import { errorHandler } from './api/middleware/errorHandler';
-import { vulnerabilityRoutes } from './api/routes/vulnerabilityRoutes';
-import { authRoutes } from './api/routes/authRoutes';
+import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
+import { config } from "./config/environment";
+import { errorHandler } from "./api/middleware/errorHandler";
+import { vulnerabilityRoutes } from "./api/routes/vulnerabilityRoutes";
+import { authRoutes } from "./api/routes/authRoutes";
 
 const app = express();
 
-// Enable CORS for development
-app.use(cors({
-  origin: '*',  // Warning: Don't use this in production!
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'X-Requested-With'],
-  credentials: true,
-  exposedHeaders: ['Content-Length', 'X-Requested-With']
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Origin",
+      "Accept",
+      "X-Requested-With",
+    ],
+    credentials: true,
+    exposedHeaders: ["Content-Length", "X-Requested-With"],
+  })
+);
 
-// Additional CORS headers for pre-flight requests
-app.options('*', cors());
+app.options("*", cors());
 
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req: Request, res: Response, buf: Buffer, encoding: string) => {
+      try {
+        JSON.parse(buf.toString());
+      } catch (e) {
+        res.status(400).json({
+          message: "Invalid JSON format",
+          error: "Bad Request",
+        });
+        throw new Error("Invalid JSON format");
+      }
+    },
+  })
+);
 
-// API routes
-app.use('/api/auth', authRoutes);
-app.use('/api/vulnerabilities', vulnerabilityRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/vulnerabilities", vulnerabilityRoutes);
 
-// Error handling should be last
 app.use(errorHandler);
-
-app.listen(config.port, () => {
-  console.log(`Server running on http://localhost:${config.port}`);
-});
 
 export default app;

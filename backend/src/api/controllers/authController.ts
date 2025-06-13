@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { JWT_SECRET, JWT_EXPIRES, ROLES } from '../../config/auth.config';
-import { LoginRequest, User } from '../../domain/interfaces/user';
+import { LoginRequest, User, isValidLoginRequest } from '../../domain/interfaces/user';
 
 const salt = bcrypt.genSaltSync(10);
 const adminHash = bcrypt.hashSync('admin123', salt);
@@ -25,7 +25,13 @@ const users: User[] = [
 
 export const login = async (req: Request<{}, {}, LoginRequest>, res: Response) => {
   try {
+    // Validate request body
+    if (!isValidLoginRequest(req.body)) {
+      return res.status(401).json({ message: 'Username and password are required' });
+    }
+
     const { username, password } = req.body;
+
     console.log('Login attempt for username:', username);
 
     // Find user (case insensitive username comparison)
