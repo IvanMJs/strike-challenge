@@ -1,7 +1,14 @@
 import React from 'react';
 import './ConfirmDialog.scss';
 
-export default function ConfirmDialog({ open, message, onConfirm, onCancel }) {
+interface ConfirmDialogProps {
+  open: boolean;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export default function ConfirmDialog({ open, message, onConfirm, onCancel }: ConfirmDialogProps) {
   if (!open) return null;
   return (
     <div className="confirm-dialog-backdrop">

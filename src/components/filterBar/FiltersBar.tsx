@@ -2,6 +2,16 @@ import React from "react";
 import { STATES, CRITICALITY_OPTIONS } from "../../utils/constants";
 import "./FiltersBar.scss";
 
+interface FiltersBarProps {
+  statusFilter: string;
+  setStatusFilter: (value: string) => void;
+  criticalityFilter: string;
+  setCriticalityFilter: (value: string) => void;
+  search: string;
+  setSearch: (value: string) => void;
+  onClear: () => void;
+}
+
 export default function FiltersBar({
   statusFilter,
   setStatusFilter,
@@ -10,7 +20,7 @@ export default function FiltersBar({
   search,
   setSearch,
   onClear,
-}) {
+}: FiltersBarProps) {
   return (
     <div className="filters-bar">
       <input
