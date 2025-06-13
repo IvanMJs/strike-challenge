@@ -1,161 +1,154 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
 import "./App.scss";
 import VulnerabilityForm from "./components/vulnerabilityForm/VulnerabilityForm";
 import VulnerabilityGrid from "./components/vulnerabilityGrid/VulnerabilityGrid";
 import FiltersBar from "./components/filterBar/FiltersBar";
-import {
-  fetchVulnerabilities,
-  createVulnerability,
-  updateVulnerability,
-  deleteVulnerability,
-} from "./services/vulnerabilityService";
-import { STATES, CRITICALITY_OPTIONS } from "./utils/constants";
+import { VulnerabilityProvider } from "./context/VulnerabilityContext";
+import { CRITICALITY_OPTIONS } from "./utils/constants";
+import { useVulnerabilities } from "./hooks/useVulnerabilities";
+import { Vulnerability } from './types/models';
+import { VulnerabilityState } from './types/constants';
 
-function App() {
-  const [vulnerabilities, setVulnerabilities] = useState([]);
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    criticality: "",
-    cwe: "",
-    suggestedFix: "",
-    status: "Pending Fix",
-  });
-  const [editingId, setEditingId] = useState(null);
-  const [error, setError] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [criticalityFilter, setCriticalityFilter] = useState("");
-  const [search, setSearch] = useState("");
+interface FormState {
+  title: string;
+  description: string;
+  criticality: string;
+  cwe: string;
+  suggestedFix: string;
+  status: VulnerabilityState;
+}
+
+const initialFormState: FormState = {
+  title: "",
+  description: "",
+  criticality: "",
+  cwe: "",
+  suggestedFix: "",
+  status: "Pending Fix"
+};
+
+function AppContent() {
+  const {
+    vulnerabilities,
+    loading,
+    error,
+    loadVulnerabilities,
+    addNewVulnerability,
+    updateExistingVulnerability,
+    removeVulnerability,
+    updateFilters
+  } = useVulnerabilities();
+
+  const [form, setForm] = useState<FormState>(initialFormState);
+  const [editingId, setEditingId] = useState<string>();
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     loadVulnerabilities();
-  }, []);
+  }, [loadVulnerabilities]);
 
-  async function loadVulnerabilities() {
-    try {
-      setVulnerabilities(await fetchVulnerabilities());
-    } catch {
-      setError("Failed to fetch vulnerabilities");
-    }
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const resetForm = () => {
+    setForm(initialFormState);
+    setEditingId(undefined);
+    setEditMode(false);
+  };
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     try {
       if (editingId) {
-        await updateVulnerability(editingId, form);
+        await updateExistingVulnerability(editingId, form);
       } else {
-        await createVulnerability(form);
+        await addNewVulnerability(form);
       }
-      setForm({
-        title: "",
-        description: "",
-        criticality: "",
-        cwe: "",
-        suggestedFix: "",
-        status: "Pending Fix",
-      });
-      setEditingId(null);
-      loadVulnerabilities();
-    } catch {
-      setError("Failed to save vulnerability");
+      resetForm();
+      await loadVulnerabilities();
+    } catch (error) {
+      console.error('Failed to save vulnerability:', error);
+      alert(error instanceof Error ? error.message : 'Failed to save vulnerability');
     }
-  }
+  };
 
-  function handleEdit(vuln) {
-    setForm({ ...vuln });
-    setEditingId(vuln.id);
-  }
-
-  async function handleDelete(id) {
-    try {
-      await deleteVulnerability(id);
-      loadVulnerabilities();
-    } catch {
-      setError("Failed to delete");
-    }
-  }
-
-  async function handleStatusChange(id, status) {
-    try {
-      await updateVulnerability(id, { status });
-      loadVulnerabilities();
-    } catch {
-      setError("Failed to update status");
-    }
-  }
-
-  function handleCancel() {
-    setEditingId(null);
+  const handleEdit = (vulnerability: Vulnerability) => {
     setForm({
-      title: "",
-      description: "",
-      criticality: "",
-      cwe: "",
-      suggestedFix: "",
-      status: "Pending Fix",
+      title: vulnerability.title,
+      description: vulnerability.description || "",
+      criticality: vulnerability.criticality || "",
+      cwe: vulnerability.cwe || "",
+      suggestedFix: vulnerability.suggestedFix || "",
+      status: vulnerability.status
     });
-  }
+    setEditingId(vulnerability.id.toString());
+    setEditMode(true);
+  };
 
-  const filteredVulnerabilities = vulnerabilities
-    .filter((vuln) => {
-      const matchesStatus = statusFilter ? vuln.status === statusFilter : true;
-      const matchesCriticality = criticalityFilter
-        ? vuln.criticality === criticalityFilter
-        : true;
-      const matchesSearch = search
-        ? vuln.title?.toLowerCase().includes(search.toLowerCase()) ||
-          vuln.description?.toLowerCase().includes(search.toLowerCase()) ||
-          vuln.cwe?.toLowerCase().includes(search.toLowerCase())
-        : true;
-      return matchesStatus && matchesCriticality && matchesSearch;
-    })
-    .sort((a, b) => {
-      const dateA = new Date(b.updatedAt || b.createdAt);
-      const dateB = new Date(a.updatedAt || a.createdAt);
-      return dateA - dateB;
-    });
+  const handleDelete = async (id: number) => {
+    try {
+      await removeVulnerability(id.toString());
+      await loadVulnerabilities();
+    } catch (error) {
+      console.error('Failed to delete vulnerability:', error);
+      alert(error instanceof Error ? error.message : 'Failed to delete vulnerability');
+    }
+  };
+
+  const handleStatusChange = async (id: number, status: VulnerabilityState) => {
+    try {
+      const vuln = vulnerabilities.find(v => v.id === id);
+      if (vuln) {
+        await updateExistingVulnerability(id.toString(), { ...vuln, status });
+        await loadVulnerabilities();
+      }
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      alert(error instanceof Error ? error.message : 'Failed to update status');
+    }
+  };
+
+  const handleFilter = (status: string, criticality: string, search: string) => {
+    updateFilters({ status, criticality, search });
+  };
+
+  if (error) {
+    return <div className="error-message">Error: {error}</div>;
+  }
 
   return (
-    <div className="container">
-      <h1>Vulnerability Manager</h1>
-      {error && <div className="error">{error}</div>}
-      <VulnerabilityForm
-        form={form}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        editingId={editingId}
-        onCancel={handleCancel}
-      />
-      <FiltersBar
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        criticalityFilter={criticalityFilter}
-        setCriticalityFilter={setCriticalityFilter}
-        search={search}
-        setSearch={setSearch}
-        onClear={() => {
-          setStatusFilter("");
-          setCriticalityFilter("");
-          setSearch("");
-        }}
-      />
-      <h2 style={{ textAlign: "center", margin: "2rem 0 1rem" }}>
-        Vulnerabilities
-      </h2>
-      <VulnerabilityGrid
-        vulnerabilities={filteredVulnerabilities}
-        STATES={STATES}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onStatusChange={handleStatusChange}
-      />
+    <div className="App">
+      <div className="container">
+        <VulnerabilityForm
+          form={form}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          editing={editMode}
+          criticalityOptions={CRITICALITY_OPTIONS}
+        />
+        <FiltersBar
+          criticalityOptions={CRITICALITY_OPTIONS}
+          onFilter={handleFilter}
+        />
+        <VulnerabilityGrid
+          vulnerabilities={vulnerabilities}
+          loading={loading}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onStatusChange={handleStatusChange}
+        />
+      </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <VulnerabilityProvider>
+      <AppContent />
+    </VulnerabilityProvider>
   );
 }
 

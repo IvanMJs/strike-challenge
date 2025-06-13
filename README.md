@@ -29,20 +29,31 @@ A modern web application for tracking and managing security vulnerabilities, bui
 ├── backend/                # Node.js Express API
 │   ├── src/
 │   │   ├── api/           # API layer (routes, controllers)
+│   │   ├── config/        # Environment configuration
 │   │   ├── domain/        # Domain types and interfaces
 │   │   ├── services/      # Business logic
 │   │   └── utils/         # Shared utilities
-│   └── tests/             # Jest test files
+│   ├── jest.config.js     # Jest test configuration
+│   └── tsconfig.json      # TypeScript configuration
 │
-└── src/                   # React frontend
-    ├── components/        # React components (with SCSS)
-    │   ├── confirmDialog/
-    │   ├── filterBar/
-    │   ├── vulnerabilityCard/
-    │   ├── vulnerabilityForm/
-    │   └── vulnerabilityGrid/
-    ├── services/          # API service layer
-    └── utils/             # Shared constants
+├── src/                   # React frontend
+│   ├── assets/           # Static assets
+│   ├── components/       # React components (with SCSS)
+│   │   ├── confirmDialog/
+│   │   ├── filterBar/
+│   │   ├── vulnerabilityCard/
+│   │   ├── vulnerabilityForm/
+│   │   └── vulnerabilityGrid/
+│   ├── services/         # API service layer
+│   ├── utils/           # Shared constants
+│   ├── App.tsx          # Main App component
+│   ├── App.scss         # Main styles
+│   └── main.tsx         # Application entry point
+│
+├── public/              # Static public assets
+├── dist/               # Build output directory
+├── tsconfig.json       # Frontend TypeScript configuration
+└── vite.config.ts      # Vite configuration
 ```
 
 ## Getting Started

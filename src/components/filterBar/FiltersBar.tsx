@@ -1,64 +1,73 @@
-import React from "react";
-import { STATES, CRITICALITY_OPTIONS } from "../../utils/constants";
+import { useState, useEffect } from "react";
+import { STATES } from "../../utils/constants";
 import "./FiltersBar.scss";
 
 interface FiltersBarProps {
-  statusFilter: string;
-  setStatusFilter: (value: string) => void;
-  criticalityFilter: string;
-  setCriticalityFilter: (value: string) => void;
-  search: string;
-  setSearch: (value: string) => void;
-  onClear: () => void;
+  criticalityOptions: string[];
+  onFilter: (status: string, criticality: string, search: string) => void;
 }
 
-export default function FiltersBar({
-  statusFilter,
-  setStatusFilter,
-  criticalityFilter,
-  setCriticalityFilter,
-  search,
-  setSearch,
-  onClear,
-}: FiltersBarProps) {
+const FiltersBar = ({
+  criticalityOptions,
+  onFilter
+}: FiltersBarProps) => {
+  const [status, setStatus] = useState("");
+  const [criticality, setCriticality] = useState("");
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    onFilter(status, criticality, searchText);
+  }, [status, criticality, searchText, onFilter]);
+
+  const handleClear = () => {
+    setStatus("");
+    setCriticality("");
+    setSearchText("");
+  };
+
   return (
     <div className="filters-bar">
-      <input
-        type="text"
-        placeholder="Search by title, description, or CWE..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="filters-bar-search"
-      />
       <select
-        value={statusFilter}
-        onChange={(e) => setStatusFilter(e.target.value)}
         className="filters-bar-select"
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
       >
         <option value="">All Statuses</option>
-        {STATES.map((s) => (
+        {Object.values(STATES).map((s) => (
           <option key={s} value={s}>
             {s}
           </option>
         ))}
       </select>
+
       <select
-        value={criticalityFilter}
-        onChange={(e) => setCriticalityFilter(e.target.value)}
         className="filters-bar-select"
+        value={criticality}
+        onChange={(e) => setCriticality(e.target.value)}
       >
         <option value="">All Criticality</option>
-        {CRITICALITY_OPTIONS.map((c) => (
+        {criticalityOptions.map((c) => (
           <option key={c} value={c}>
             {c}
           </option>
         ))}
       </select>
-      {(statusFilter || criticalityFilter || search) && (
-        <button className="filters-bar-clear" onClick={onClear}>
-          Clear
+
+      <input
+        type="text"
+        className="filters-bar-search"
+        placeholder="Search by title, description, or CWE..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+
+      {(status || criticality || searchText) && (
+        <button className="filters-bar-clear" onClick={handleClear}>
+          Clear Filters
         </button>
       )}
     </div>
   );
-}
+};
+
+export default FiltersBar;
