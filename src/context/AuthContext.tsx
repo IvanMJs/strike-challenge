@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as authService from '../services/authService';
 
 type Role = 'admin' | 'user';
 
 interface User {
+  id: string;
   username: string;
   role: Role;
 }
@@ -16,38 +18,24 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USERS = {
-  admin: { username: 'admin', password: 'admin123', role: 'admin' as Role },
-  user: { username: 'user', password: 'user123', role: 'user' as Role },
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
+    return authService.getUser();
   });
 
   const login = async (username: string, password: string) => {
-    const lowercaseUsername = username.toLowerCase();
-    const userEntry = Object.values(USERS).find(
-      (u) => u.username === lowercaseUsername && u.password === password
-    );
-
-    if (userEntry) {
-      const userData: User = {
-        username: userEntry.username,
-        role: userEntry.role,
-      };
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
+    try {
+      const response = await authService.login({ username, password });
+      setUser(response.user as User);
       return true;
+    } catch (error) {
+      console.error('Login failed:', error);
+      return false;
     }
-    return false;
   };
-
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    authService.logout();
   };
 
   const value = {

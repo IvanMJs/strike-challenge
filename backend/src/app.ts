@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from './config/environment';
 import { errorHandler } from './api/middleware/errorHandler';
 import { vulnerabilityRoutes } from './api/routes/vulnerabilityRoutes';
+import { authRoutes } from './api/routes/authRoutes';
 
 const app = express();
 
@@ -19,7 +20,12 @@ app.use(cors({
 app.options('*', cors());
 
 app.use(express.json());
+
+// API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/vulnerabilities', vulnerabilityRoutes);
+
+// Error handling should be last
 app.use(errorHandler);
 
 app.listen(config.port, () => {
