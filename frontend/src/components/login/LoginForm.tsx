@@ -7,12 +7,14 @@ export function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     
     try {
       const success = await login(username, password);
@@ -23,6 +25,8 @@ export function LoginForm() {
       }
     } catch (err) {
       setError('An error occurred during login');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +41,10 @@ export function LoginForm() {
             id="username"
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => { 
+              setUsername(e.target.value);
+              setError('');
+            }}
             placeholder="Enter username"
             required
           />
@@ -48,12 +55,17 @@ export function LoginForm() {
             id="password"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError('');
+            }}
             placeholder="Enter password"
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   );
