@@ -174,7 +174,23 @@ Create a `.env` file in the backend directory to customize these values.
 ## Testing and Coverage
 
 ### Running Tests
-To run the backend tests, navigate to the backend directory and use one of the following commands:
+
+#### Backend Tests
+Navigate to the backend directory and use one of the following commands:
+
+```bash
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+#### Frontend Tests
+Navigate to the frontend directory and use one of the following commands:
 
 ```bash
 # Run tests
@@ -188,6 +204,8 @@ npm run test:coverage
 ```
 
 ### Coverage Report
+
+#### Backend Coverage
 After running tests with coverage, you can find the detailed coverage report in:
 - HTML format: `backend/coverage/lcov-report/index.html`
 - Console output showing:
@@ -198,6 +216,38 @@ After running tests with coverage, you can find the detailed coverage report in:
 
 The coverage report breaks down test coverage by:
 - Controllers (auth, vulnerabilities)
+- Middleware
+- Services
+- Utils
+
+#### Frontend Coverage
+Frontend coverage report is available at:
+- HTML format: `frontend/coverage/lcov-report/index.html`
+
+The frontend test suite includes comprehensive coverage of:
+- Component Tests
+  - VulnerabilityView (full CRUD operations)
+  - VulnerabilityForm (input validation, submission)
+  - VulnerabilityGrid (display, filtering)
+  - FiltersBar (search, status filters)
+  - ConfirmDialog (delete confirmation)
+- Context Tests
+  - AuthContext (authentication state)
+  - VulnerabilityContext (state management)
+- Reducer Tests
+  - vulnerabilityReducer (state updates)
+- Utility Tests
+  - storage (localStorage handling)
+  - constants (type validation)
+
+Key testing features:
+- Async operation testing
+- Form validation
+- Error handling
+- User interactions
+- Role-based access control
+- State management
+- API integration
 - Middleware (authentication, error handling)
 - Services
 - Utils
