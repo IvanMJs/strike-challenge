@@ -28,6 +28,7 @@ export default function FiltersBar() {
         value={filters.status}
         onChange={(e) => handleFilterChange('status', e.target.value as VulnerabilityState | '')}
         className="filters-bar-select"
+        aria-label="status"
       >
         <option value="">All Statuses</option>
         {Object.values(STATES).map((s) => (
@@ -40,6 +41,7 @@ export default function FiltersBar() {
         value={filters.criticality}
         onChange={(e) => handleFilterChange('criticality', e.target.value)}
         className="filters-bar-select"
+        aria-label="criticality"
       >
         <option value="">All Criticality</option>
         {CRITICALITY_OPTIONS.map((c) => (
