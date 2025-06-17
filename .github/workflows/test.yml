@@ -6,6 +6,7 @@ on:
 
 jobs:
   test:
+    name: Run Tests and Check Coverage
     runs-on: ubuntu-latest
 
     strategy:
