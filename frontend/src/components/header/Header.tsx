@@ -17,7 +17,7 @@ export function Header() {
       <h1>Vulnerability Management</h1>
       {user && (
         <div className="user-info">
-          <span>Welcome, {user.username} ({user.role})</span>
+          <span>Welcome, {user.username}</span>
           <button onClick={handleLogout} className="logout-button">
             Logout
           </button>
