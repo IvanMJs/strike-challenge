@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './ConfirmDialog.scss';
 
 interface ConfirmDialogProps {
@@ -9,16 +10,34 @@ interface ConfirmDialogProps {
 }
 
 export default function ConfirmDialog({ open, message, onConfirm, onCancel }: ConfirmDialogProps) {
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
+
   if (!open) return null;
-  return (
-    <div className="confirm-dialog-backdrop">
-      <div className="confirm-dialog">
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
+  const dialog = (
+    <div className="confirm-dialog-backdrop" onClick={handleBackdropClick}>
+      <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
         <div className="confirm-dialog-message">{message}</div>
         <div className="confirm-dialog-actions">
-          <button className="confirm-btn" onClick={onConfirm}>Yes</button>
           <button className="cancel-btn" onClick={onCancel}>No</button>
+          <button className="confirm-btn" onClick={onConfirm}>Yes</button>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(dialog, document.body);
 }

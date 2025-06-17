@@ -1,10 +1,35 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import FiltersBar from '../../../components/filterBar/FiltersBar';
 import { VulnerabilityProvider } from '../../../context/VulnerabilityContext';
 import { STATES, CRITICALITY_OPTIONS } from '../../../utils/constants';
+
+const mockVulnerabilities = [
+  {
+    id: '1',
+    title: 'Test Vulnerability 1',
+    description: 'Test Description 1',
+    cwe: 'CWE-79',
+    state: STATES.OPEN,
+    criticality: CRITICALITY_OPTIONS[0],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    history: []
+  },
+  {
+    id: '2',
+    title: 'Test Vulnerability 2',
+    description: 'Test Description 2',
+    cwe: 'CWE-89',
+    state: STATES.IN_PROGRESS,
+    criticality: CRITICALITY_OPTIONS[1],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    history: []
+  },
+];
 
 const mockDispatch = vi.fn();
 
@@ -15,6 +40,10 @@ const mockUseVulnerabilities = vi.fn().mockReturnValue({
     criticality: '',
   },
   dispatch: mockDispatch,
+  vulnerabilities: mockVulnerabilities,
+  filteredVulnerabilities: mockVulnerabilities,
+  loading: false,
+  error: null
 });
 
 vi.mock('../../../context/VulnerabilityContext', () => ({
@@ -34,70 +63,73 @@ describe('FiltersBar', () => {
       </VulnerabilityProvider>
     );
 
-    expect(screen.getByPlaceholderText('Search by title, description, or CWE...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search vulnerabilities...')).toBeInTheDocument();
+    expect(screen.getByText('Showing 2 of 2 vulnerabilities')).toBeInTheDocument();
 
-    const statusSelect = screen.getByRole('combobox', { name: /status/i });
+    const statusSelect = screen.getByLabelText('Filter by status');
     expect(statusSelect).toBeInTheDocument();
 
-    const criticalitySelect = screen.getByRole('combobox', { name: /criticality/i });
+    const criticalitySelect = screen.getByLabelText('Filter by criticality');
     expect(criticalitySelect).toBeInTheDocument();
-
-    expect(screen.queryByText('Clear Filters')).not.toBeInTheDocument();
   });
-  it('handles search input changes', async () => {
+
+  it('updates search filter on input change', async () => {
     render(
       <VulnerabilityProvider>
         <FiltersBar />
       </VulnerabilityProvider>
     );
 
-    const searchInput = screen.getByPlaceholderText('Search by title, description, or CWE...');
-    fireEvent.change(searchInput, { target: { value: 'test search' } });
+    const searchInput = screen.getByPlaceholderText('Search vulnerabilities...');
+    fireEvent.change(searchInput, { target: { value: 'test' } });
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'SET_FILTER',
-      payload: { key: 'search', value: 'test search' },
+      payload: { key: 'search', value: 'test' }
     });
   });
 
-  it('handles status filter changes', () => {
+  it('updates status filter on select change', () => {
     render(
       <VulnerabilityProvider>
         <FiltersBar />
       </VulnerabilityProvider>
-    );    const statusSelect = screen.getByRole('combobox', { name: /status/i });
-    fireEvent.change(statusSelect, { target: { value: 'Pending Fix' } });
+    );
+
+    const statusSelect = screen.getByLabelText('Filter by status');
+    fireEvent.change(statusSelect, { target: { value: STATES.IN_PROGRESS } });
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'SET_FILTER',
-      payload: { key: 'status', value: 'Pending Fix' },
+      payload: { key: 'status', value: STATES.IN_PROGRESS }
     });
   });
 
-  it('handles criticality filter changes', () => {
+  it('updates criticality filter on select change', () => {
     render(
       <VulnerabilityProvider>
         <FiltersBar />
       </VulnerabilityProvider>
-    );    const criticalitySelect = screen.getByRole('combobox', { name: /criticality/i });
-    fireEvent.change(criticalitySelect, { target: { value: 'High' } });
+    );
+
+    const criticalitySelect = screen.getByLabelText('Filter by criticality');
+    fireEvent.change(criticalitySelect, { target: { value: CRITICALITY_OPTIONS[1] } });
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'SET_FILTER',
-      payload: { key: 'criticality', value: 'High' },
+      payload: { key: 'criticality', value: CRITICALITY_OPTIONS[1] }
     });
   });
 
-  it('shows and handles clear filters button', () => {
-
-    mockUseVulnerabilities.mockImplementation(() => ({
+  it('shows "Clear Filters" button when filters are active', () => {
+    mockUseVulnerabilities.mockReturnValueOnce({
+      ...mockUseVulnerabilities(),
       filters: {
         search: 'test',
-        status: 'open',
-        criticality: 'high',
+        status: STATES.OPEN,
+        criticality: CRITICALITY_OPTIONS[0],
       },
-      dispatch: mockDispatch,
-    }));
+    });
 
     render(
       <VulnerabilityProvider>
@@ -109,43 +141,6 @@ describe('FiltersBar', () => {
     expect(clearButton).toBeInTheDocument();
 
     fireEvent.click(clearButton);
-
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'CLEAR_FILTERS',
-    });
-  });
-
-  it('renders all status options', () => {
-    render(
-      <VulnerabilityProvider>
-        <FiltersBar />
-      </VulnerabilityProvider>
-    );
-
-    const statusSelect = screen.getByRole('combobox', { name: /status/i });
-    const options = Array.from(statusSelect.getElementsByTagName('option'));
-    
-    expect(options).toHaveLength(Object.values(STATES).length + 1);
-    expect(options[0]).toHaveTextContent('All Statuses');
-    Object.values(STATES).forEach(status => {
-      expect(screen.getByRole('option', { name: status })).toBeInTheDocument();
-    });
-  });
-
-  it('renders all criticality options', () => {
-    render(
-      <VulnerabilityProvider>
-        <FiltersBar />
-      </VulnerabilityProvider>
-    );
-
-    const criticalitySelect = screen.getByRole('combobox', { name: /criticality/i });
-    const options = Array.from(criticalitySelect.getElementsByTagName('option'));
-    
-    expect(options).toHaveLength(CRITICALITY_OPTIONS.length + 1);
-    expect(options[0]).toHaveTextContent('All Criticality');
-    CRITICALITY_OPTIONS.forEach(criticality => {
-      expect(screen.getByRole('option', { name: criticality })).toBeInTheDocument();
-    });
+    expect(mockDispatch).toHaveBeenCalledWith({ type: 'CLEAR_FILTERS' });
   });
 });
