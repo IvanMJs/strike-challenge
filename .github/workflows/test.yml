@@ -1,0 +1,62 @@
+name: Test Coverage
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install Frontend Dependencies
+      working-directory: ./frontend
+      run: npm ci
+      
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: npm ci
+
+    - name: Run Frontend Tests
+      working-directory: ./frontend
+      run: npm run coverage
+      
+    - name: Check Frontend Coverage
+      working-directory: ./frontend
+      run: |
+        COVERAGE=$(cat coverage/lcov.info | grep -E "^SF:" -A 1 | grep -E "^LH:" | awk '{ sum += $2 } END { print sum }')
+        TOTAL=$(cat coverage/lcov.info | grep -E "^SF:" -A 1 | grep -E "^LF:" | awk '{ sum += $2 } END { print sum }')
+        COVERAGE_PCT=$(( 100 * $COVERAGE / $TOTAL ))
+        echo "Coverage: $COVERAGE_PCT%"
+        if [ "$COVERAGE_PCT" -lt 80 ]; then
+          echo "Error: Frontend coverage is below 80%"
+          exit 1
+        fi
+
+    - name: Run Backend Tests
+      working-directory: ./backend
+      run: npm run coverage
+      
+    - name: Check Backend Coverage
+      working-directory: ./backend
+      run: |
+        COVERAGE=$(cat coverage/lcov.info | grep -E "^SF:" -A 1 | grep -E "^LH:" | awk '{ sum += $2 } END { print sum }')
+        TOTAL=$(cat coverage/lcov.info | grep -E "^SF:" -A 1 | grep -E "^LF:" | awk '{ sum += $2 } END { print sum }')
+        COVERAGE_PCT=$(( 100 * $COVERAGE / $TOTAL ))
+        echo "Coverage: $COVERAGE_PCT%"
+        if [ "$COVERAGE_PCT" -lt 80 ]; then
+          echo "Error: Backend coverage is below 80%"
+          exit 1
+        fi
