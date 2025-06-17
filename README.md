@@ -4,10 +4,13 @@ A modern web application for tracking and managing security vulnerabilities, bui
 
 ## Features
 - **Authentication & Authorization**
-  - JWT-based authentication
-  - Role-based access control (Admin/User roles)
+  - JWT-based authentication 
+  - Role-based access control (Admin/User roles) 
   - Protected routes and API endpoints
   - Persistent sessions
+
+  ## [PR-JWT-AUTH](https://github.com/IvanMJs/strike-challenge/pull/4)
+  ## [PR-ROLE-SUPPORT](https://github.com/IvanMJs/strike-challenge/pull/3)
 
 - **Vulnerability Management**
   - Create, view, edit, and delete vulnerabilities (based on role)
@@ -87,6 +90,20 @@ A modern web application for tracking and managing security vulnerabilities, bui
     └── tests/           # Backend integration tests
 ```
 
+# CI/CD :
+### GitHub Actions
+
+## [PR Workflow Github Actions](https://github.com/IvanMJs/strike-challenge/pull/9/files#diff-f7d70e1bacea95e9c2008e5cbd7698c48ca63a1f4e7d4eb4d22d0b2db50f6aa6)
+
+The project includes automated testing and coverage checks that run on pull requests to the main branch:
+
+- **Test Coverage Workflow**  
+  - Runs on every pull request to `main`
+  - Executes both frontend and backend test suites
+  - Enforces minimum 80% code coverage requirement
+  - Uses Node.js 18.x
+  - Separate coverage checks for frontend and backend
+![alt text](image.png)
 ## Getting Started
 
 ### Prerequisites
@@ -99,6 +116,7 @@ A modern web application for tracking and managing security vulnerabilities, bui
 
 2. Install frontend dependencies:
 ```bash
+cd frontend
 npm install
 ```
 
@@ -203,9 +221,11 @@ npm run test:watch
 npm run test:coverage
 ```
 
-### Coverage Report
+### Coverage Report :
 
-#### Backend Coverage
+# Backend Coverage
+### PR to implementation: [PR BACKEND TEST COVERAGE](https://github.com/IvanMJs/strike-challenge/pull/5)
+
 After running tests with coverage, you can find the detailed coverage report in:
 - HTML format: `backend/coverage/lcov-report/index.html`
 - Console output showing:
@@ -220,7 +240,12 @@ The coverage report breaks down test coverage by:
 - Services
 - Utils
 
-#### Frontend Coverage
+ 
+![alt text](image-1.png)
+
+# Frontend Coverage
+### PR to implementation: [PR FRONTEND TEST COVERAGE](https://github.com/IvanMJs/strike-challenge/pull/7)
+
 Frontend coverage report is available at:
 - HTML format: `frontend/coverage/lcov-report/index.html`
 
@@ -252,18 +277,11 @@ Key testing features:
 - Services
 - Utils
 
-### Test Organization
-Tests are organized in the `backend/tests` directory:
-- `auth.test.ts` - Authentication and authorization tests
-- `vulnerabilities.test.ts` - CRUD operations and validation tests
-- `testHelpers.ts` - Shared test utilities and fixtures
+![alt text](image-2.png)
 
-## Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+### Test Organization
+Tests are organized in the `backend/tests` and `frontend/tests` directory:
+
 
 ## License
 This project is licensed under the MIT License.
@@ -275,6 +293,7 @@ cd strike-challenge
 ### 2. Install dependencies
 For the frontend:
 ```sh
+cd frontend
 npm install
 ```
 
@@ -317,13 +336,6 @@ The frontend will run on [http://localhost:5173](http://localhost:5173)
 
 ## Notes
 - This project uses an in-memory backend for demo purposes. All data will reset when the server restarts.
-- For production, consider:
-  - Adding a persistent database
-  - Implementing user authentication
-  - Setting up proper CORS configuration
-  - Adding input validation
-  - Implementing error logging
-
 ---
 
 **Made for the Strike Challenge.**
