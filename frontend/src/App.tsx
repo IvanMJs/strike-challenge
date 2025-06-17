@@ -13,6 +13,20 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="app">
+          <div className="video-background">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="background-video"
+            >
+              <source
+                src="https://cdn.prod.website-files.com/661f1186a2fe0a147b01a1c0%2F67c99ea88ee0cf38f4011a6c_Hero%20Blue%20Video%20%281%29-transcode.webm"
+                type="video/webm"
+              />
+            </video>
+          </div>
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route

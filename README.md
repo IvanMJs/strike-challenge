@@ -1,6 +1,8 @@
 # Vulnerability Manager
 
-A modern web application for tracking and managing security vulnerabilities, built with **React**, **TypeScript**, **Sass**, and **Node.js (Express)**. Features role-based access control, JWT authentication, and a responsive design.
+A modern web application for tracking and managing security vulnerabilities, built with **React**, **TypeScript**, **Sass**, and **Node.js (Express)**. Features role-based access control, JWT authentication, and a modern, responsive design inspired by Strike.sh.
+
+![alt text](strike-demo.gif)
 
 ## Features
 - **Authentication & Authorization**
@@ -12,28 +14,44 @@ A modern web application for tracking and managing security vulnerabilities, bui
   ## [PR-JWT-AUTH](https://github.com/IvanMJs/strike-challenge/pull/4)
   ## [PR-ROLE-SUPPORT](https://github.com/IvanMJs/strike-challenge/pull/3)
 
+- **Modern UI/UX Design**
+  - Stunning video background with gradient overlay
+  - Glassmorphism effect throughout the interface
+  - Responsive pill-shaped navigation
+  - Mobile-first design with hamburger menu
+  - Smooth animations and transitions
+  - Premium look and feel
+  - Optimized for all screen sizes
+
 - **Vulnerability Management**
   - Create, view, edit, and delete vulnerabilities (based on role)
   - Track status with transitions (Pending Fix, In Progress, Under Review, etc.)
   - Filter and search by status, criticality, and keywords
-  - Responsive card grid layout for vulnerability details
+  - Compact, responsive card grid layout
   - History of state changes
   - Custom confirmation dialogs
   - Form validation
   - Robust JSON payload validation with clear error messages
 
-- **User Interface**
+- **User Experience**
   - Modern, clean UI with Sass styling
-  - Responsive design for all devices
+  - Intuitive navigation and layout
   - Role-specific UI elements
   - Toast notifications for actions
   - Loading states and error handling
+  - Responsive design optimized for all devices
+  - Enhanced accessibility
+  - Performance optimized
 
 ## Tech Stack
 ### Frontend
 - **Framework:** React 18 with TypeScript
 - **Build Tool:** Vite
-- **Styling:** Sass (SCSS) with CSS Modules
+- **Styling:** Sass (SCSS) with modern UI patterns:
+  - Glassmorphism effects
+  - CSS Grid for responsive layouts
+  - CSS Variables for theming
+  - Advanced animations
 - **State Management:** Context API + Reducers
 - **Routing:** React Router v6
 - **HTTP Client:** Fetch API
