@@ -45,6 +45,8 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
+    mode: 'cors',
     body: JSON.stringify(credentials),
   });
   if (!response.ok) {
