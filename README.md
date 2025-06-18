@@ -184,6 +184,51 @@ All endpoints require a valid JWT token in the Authorization header.
 - `PUT /api/vulnerabilities/:id` - Update a vulnerability (Admin only)
 - `DELETE /api/vulnerabilities/:id` - Delete a vulnerability (Admin only)
 
+## Deployment
+
+### Live Application
+The application is deployed and accessible at:
+- Frontend: [https://strike-challenge-iota.vercel.app/](https://strike-challenge-iota.vercel.app/)
+- Backend API: [https://strike-challenge.onrender.com/](https://strike-challenge.onrender.com/)
+
+### Deployment Configuration
+
+#### Frontend (Vercel)
+1. Connect your GitHub repository to Vercel
+2. Configure the build settings:
+   - Framework Preset: Vite
+   - Root Directory: `frontend`
+   - Build Command: `npm install && npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+
+#### Backend (Render)
+1. Connect your GitHub repository to Render
+2. Create a new Web Service
+3. Configure the service:
+   - Root Directory: `backend`
+   - Build Command: `npm install && npm run build`
+   - Start Command: `npm start`
+   - Environment Variables:
+     - `NODE_ENV`: production
+     - `PORT`: 10000
+
+### Environment Setup for Deployment
+
+#### Frontend Environment Variables
+Create `.env.production` in the frontend directory:
+```env
+VITE_API_URL=https://strike-challenge.onrender.com
+NODE_ENV=production
+```
+
+#### Backend Environment Variables
+Set these in Render.com environment variables section:
+```env
+PORT=10000
+NODE_ENV=production
+```
+
 ## Development
 
 ### Environment Variables
