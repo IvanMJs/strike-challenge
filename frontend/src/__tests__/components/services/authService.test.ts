@@ -61,6 +61,8 @@ describe('authService', () => {  beforeEach(() => {
 
       expect(mockFetch).toHaveBeenCalledWith(`${API_URL}/api/auth/login`, {
         method: 'POST',
+        credentials: 'include',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
         },
