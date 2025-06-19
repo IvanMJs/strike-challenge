@@ -8,16 +8,15 @@ import { authRoutes } from "./api/routes/authRoutes";
 const app = express();
 
 // Security headers middleware
-app.use((req, res, next) => {  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://strike-challenge.onrender.com https://strike-challenge-iota.vercel.app http://localhost:5173"
+app.use((req, res, next) => {  res.setHeader(    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://strike-challenge.onrender.com https://strike-challenge-iota.vercel.app http://localhost:5173 http://localhost:3000 http://localhost:4000"
   );
   next();
 });
 
 app.use(
   cors({
-    origin: ["https://strike-challenge-iota.vercel.app", "http://localhost:5173"],
+    origin: ["https://strike-challenge-iota.vercel.app", "http://localhost:5173", "http://localhost:3000", "http://localhost:4000"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
