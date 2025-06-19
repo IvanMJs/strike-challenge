@@ -2,7 +2,91 @@
 
 A modern web application for tracking and managing security vulnerabilities, built with **React**, **TypeScript**, **Sass**, and **Node.js (Express)**. Features role-based access control, JWT authentication, and a modern, responsive design inspired by Strike.sh.
 
-![alt text](strike-demo.gif)
+## 🚀 Running the Application
+
+### 🐳 Option 1: Docker (Recommended)
+
+The easiest way to run the application is with Docker Compose:
+
+```bash
+# Clone the repository
+git clone https://github.com/IvanMJs/strike-challenge.git
+cd strike-challenge
+
+# Build and start the containers
+docker-compose up --build
+```
+
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:4000
+
+### 💻 Option 2: Local Development
+
+1. Install frontend dependencies:
+```bash
+cd frontend
+npm install
+```
+
+2. Install backend dependencies:
+```bash
+cd backend
+npm install
+```
+
+3. Start the backend server:
+```bash
+cd backend
+npm run dev
+```
+
+4. In a new terminal, start the frontend:
+```bash
+cd frontend
+npm run dev
+```
+
+The application will be available at:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:4000
+
+### ☁️ Option 3: Production Deployment
+
+The application is deployed at:
+- Frontend: [https://strike-challenge-iota.vercel.app/](https://strike-challenge-iota.vercel.app/)
+- Backend API: [https://strike-challenge.onrender.com/](https://strike-challenge.onrender.com/)
+
+## 🔐 Default Credentials
+- Admin: `admin` / `admin123`
+- User: `user` / `user123`
+
+## 🌍 Environment Setup
+
+The application supports three environments, each with its own configuration:
+
+### 1. Docker Environment
+- Uses `.env.docker` in frontend
+- Frontend runs on port 3000 via Nginx
+- Backend runs on port 4000
+- Frontend automatically configured to use backend at http://localhost:4000
+- CORS and CSP configured for local Docker development
+
+### 2. Local Development
+- Uses standard `.env` files
+- Frontend runs on port 5173 (Vite default)
+- Backend runs on port 4000
+- Environment variables can be customized via `.env` files
+
+### 3. Production (Vercel/Render)
+- Frontend deployed on Vercel
+  - Uses `.env.production`
+  - Configured to use production backend URL
+- Backend deployed on Render
+  - Environment variables set in Render dashboard
+  - Production-specific CORS and security settings
+
+![Demo](strike-demo.gif)
 
 ## Features
 - **Authentication & Authorization**
@@ -122,39 +206,12 @@ The project includes automated testing and coverage checks that run on pull requ
   - Uses Node.js 18.x
   - Separate coverage checks for frontend and backend
 ![alt text](image.png)
-## Getting Started
+## System Requirements
 
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Installation and Setup
-
-1. Clone the repository
-
-2. Install frontend dependencies:
-```bash
-cd frontend
-npm install
-```
-
-3. Install backend dependencies:
-```bash
-cd backend
-npm install
-```
-
-4. Start the backend server (from the backend directory):
-```bash
-npm run dev
-```
-
-5. In a new terminal, start the frontend development server (from the root directory):
-```bash
-npm run dev
-```
-
-The application will be available at http://localhost:5173
+- For Docker: Docker and Docker Compose
+- For local development:
+  - Node.js (v14 or higher)
+  - npm or yarn
 
 ## Authentication
 
@@ -348,55 +405,6 @@ Tests are organized in the `backend/tests` and `frontend/tests` directory:
 
 ## License
 This project is licensed under the MIT License.
-```sh
-git clone https://github.com/your-username/strike-challenge.git
-cd strike-challenge
-```
-
-### 2. Install dependencies
-For the frontend:
-```sh
-cd frontend
-npm install
-```
-
-For the backend:
-```sh
-cd backend
-npm install
-```
-
-### 3. Start the backend API
-```sh
-cd backend
-npm run build  # Build TypeScript files
-npm start      # Start the server
-```
-The backend will run on [http://localhost:4000](http://localhost:4000)
-
-For development with auto-reload:
-```sh
-npm run dev
-```
-
-### 4. Start the frontend (React)
-```sh
-npm run dev
-```
-The frontend will run on [http://localhost:5173](http://localhost:5173)
-
-## Development
-- Frontend and backend are both written in TypeScript for type safety
-- Use `npm run build` to compile TypeScript files
-- Use `npm run dev` for development with hot-reload
-- Run tests with `npm test`
-
-## API Endpoints
-- `GET /api/vulnerabilities` - List all vulnerabilities
-- `POST /api/vulnerabilities` - Create a new vulnerability
-- `PUT /api/vulnerabilities/:id` - Update a vulnerability
-- `DELETE /api/vulnerabilities/:id` - Delete a vulnerability
-
 ## Notes
 - This project uses an in-memory backend for demo purposes. All data will reset when the server restarts.
 ---
